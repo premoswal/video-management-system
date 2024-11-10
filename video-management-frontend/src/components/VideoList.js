@@ -5,25 +5,32 @@ import axios from 'axios';
 const VideoList = ({ videos, setVideos }) => {
   const [selectedVideo, setSelectedVideo] = useState(null);
 
-  const deleteVideo = async (id) => {
-    try {
-      const response = await axios.delete(`http://localhost:5000/api/videos/${id}`);
-      if (response.status === 200 && response.data.message === 'Video deleted successfully') {
-        const updatedVideos = videos.filter(video => video._id !== id);
-        setVideos(updatedVideos); // Update state in App.js
-        alert('Video deleted successfully');
+// Delete Video Route
+const deleteVideo = async (id) => {
+  try {
+    const response = await axios.delete(`http://localhost:5000/api/videos/${id}`);
+    
+    // Log the response to see its content
+    console.log('Delete response:', response);
 
-        if (selectedVideo && selectedVideo._id === id) {
-          setSelectedVideo(null);
-        }
-      } else {
-        throw new Error('Deletion not confirmed');
+    // Confirm if the deletion was successful based on status or message
+    if (response.status === 200 && response.data.message === 'Video deleted successfully') {
+      const updatedVideos = videos.filter(video => video._id !== id);
+      setVideos(updatedVideos);
+      alert('Video deleted successfully');
+
+      if (selectedVideo && selectedVideo._id === id) {
+        setSelectedVideo(null);
       }
-    } catch (error) {
-      console.error('Error deleting video:', error);
-      alert('Failed to delete video');
+    } else {
+      throw new Error('Deletion not confirmed');
     }
-  };
+  } catch (error) {
+    console.error('Error deleting video:', error);
+    alert('Failed to delete video');
+  }
+};
+  
 
   return (
     <div className="video-list">

@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 const { upload, uploadVideo, getVideos } = require('../controllers/videoController');
 

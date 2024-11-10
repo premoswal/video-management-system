@@ -28,29 +28,22 @@ app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
+
 // Delete Video Route
-const deleteVideo = async (id) => {
+// Backend: Express delete route for video
+app.delete('/api/videos/:id', async (req, res) => {
   try {
-    const response = await axios.delete(`http://localhost:5000/api/videos/${id}`);
-    
-    // Log the response to see its content
-    console.log('Delete response:', response);
+    const videoId = req.params.id;
+    const video = await Video.findByIdAndDelete(videoId); // Mongoose delete by ID
 
-    // Confirm if the deletion was successful based on status or message
-    if (response.status === 200 && response.data.message === 'Video deleted successfully') {
-      const updatedVideos = videos.filter(video => video._id !== id);
-      setVideos(updatedVideos);
-      alert('Video deleted successfully');
-
-      if (selectedVideo && selectedVideo._id === id) {
-        setSelectedVideo(null);
-      }
+    if (video) {
+      res.status(200).json({ message: 'Video deleted successfully' });
     } else {
-      throw new Error('Deletion not confirmed');
+      res.status(404).json({ message: 'Video not found' });
     }
   } catch (error) {
-    console.error('Error deleting video:', error);
-    alert('Failed to delete video');
+    res.status(500).json({ message: 'Server error', error });
   }
-};
+});
+
 
